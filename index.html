@@ -45,19 +45,53 @@
 
       const Companies = ({ companies, match }) => {
         return (
-          <ul>
-            {
-              companies.map(company =>
-              <li className = { company.id === match.params.id ? 'selected':''} key = {company.id} >
-                <Link to = {`/companies/${company.id}`}>
-                  { company.name }
-                </Link>
-              </li>)
-            }
-          </ul>
+          <div>
+            <ul>
+              {
+                companies.map(company =>
+                <li className = { company.id === match.params.id ? 'selected':''} key = {company.id} >
+                  <Link to = {`/companies/${company.id}`}>
+                    { company.name }
+                  </Link>
+                </li>)
+              }
+            </ul>
+            <Route path='/companies/:id' render={({ match })=> <Company companies ={ companies } match={ match } />}/>
+          </div>
         )
       }
 
+      class Company extends Component {
+        constructor(){
+          super();
+          this.state = {
+            company: []
+          };
+        }
+        async componentDidMount() {
+          const company = (await axios.get(`https://acme-users-api-rev.herokuapp.com/api/companies/${this.props.match.params.id}/companyProfits`)).data
+          this.setState({ company })
+        }
+        async componentDidUpdate(prevProps) {
+          if(this.props.match.params.id !== this.prevProps.match.params.id){
+            const company = (await axios.get(`https://acme-users-api-rev.herokuapp.com/api/companies/${this.props.match.params.id}/companyProfits`)).data
+            this.setState({ company })
+          }
+        }
+        render(){
+          const { company } = this.state
+          return(
+            <ul>
+              {
+                company.map(company=> <li key={company.id}>
+                { company.fiscalYear }
+                { company.amount }
+                </li>)
+              }
+            </ul>
+          );
+        }
+      }
       class App extends Component {
         constructor() {
           super();
@@ -76,7 +110,7 @@
           return (
             <HashRouter>
               <Route render = { () => <Nav companies = { companies } /> } />
-              <Route path = '/companies/:id' render = { ({ match }) => <Companies companies = { companies } match={ match } /> } />
+              <Route path = '/companies/:id?' render = { ({ match }) => <Companies companies = { companies } match={ match } /> } />
             </HashRouter>
           )
         }
