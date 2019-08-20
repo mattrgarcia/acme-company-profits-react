@@ -6,10 +6,20 @@
       <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.js'></script>
       <script src='https://cdnjs.cloudflare.com/ajax/libs/react-router-dom/5.0.1/react-router-dom.js'></script>
       <style>
+        body {
+          font-family: verdana;
+        }
         .nav {
           display: flex;
           justify-content: space-around;
         }
+      .selected {
+        background-color: tomato;
+        color: white;
+        font-weight: bold;
+        padding: 1rem;
+        text-decoration: line-through;
+      }
 
         </style>
   </head>
@@ -24,23 +34,23 @@
       const {render} = ReactDOM;
       const {HashRouter, Route, Link} = ReactRouterDOM;
 
-      const Nav = ({companies}) => {
+      const Nav = ({ companies }) => {
         return (
           <div className = 'nav'>
             <Link to = '/'>Acme Company Profits with React Router</Link>
-            <Link to = '/companies'>Companies ({companies.length})</Link>
+            <Link to = '/companies'>Companies ({ companies.length })</Link>
           </div>
         )
       }
 
-      const Companies = ({companies}) => {
+      const Companies = ({ companies, match }) => {
         return (
           <ul>
             {
               companies.map(company =>
-              <li key = {company.id}>
+              <li className = { company.id === match.params.id ? 'selected':''} key = {company.id} >
                 <Link to = {`/companies/${company.id}`}>
-                  {company.name}
+                  { company.name }
                 </Link>
               </li>)
             }
@@ -58,15 +68,15 @@
 
         async componentDidMount() {
           const companies = (await axios.get('https://acme-users-api-rev.herokuapp.com/api/companies')).data
-          this.setState({companies})
+          this.setState({ companies })
         }
 
         render() {
           const {companies} = this.state
           return (
             <HashRouter>
-              <Route render = { () => <Nav companies = {companies} /> } />
-              <Route path = '/companies' render = { () => <Companies companies = {companies} /> } />
+              <Route render = { () => <Nav companies = { companies } /> } />
+              <Route path = '/companies/:id' render = { ({ match }) => <Companies companies = { companies } match={ match } /> } />
             </HashRouter>
           )
         }
