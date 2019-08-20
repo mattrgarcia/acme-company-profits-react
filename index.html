@@ -6,6 +6,11 @@
       <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.js'></script>
       <script src='https://cdnjs.cloudflare.com/ajax/libs/react-router-dom/5.0.1/react-router-dom.js'></script>
       <style>
+        .nav {
+          display: flex;
+          justify-content: space-around;
+        }
+
         </style>
   </head>
   <body>
@@ -19,6 +24,15 @@
       const {render} = ReactDOM;
       const {HashRouter, Route, Link} = ReactRouterDOM;
 
+      const Nav = ({companies}) => {
+        return (
+          <div className = 'nav'>
+            <Link to = '/'>Acme Company Profits with React Router</Link>
+            <Link to = '/companies'>Companies ({companies.length})</Link>
+          </div>
+        )
+      }
+
       class App extends Component {
         constructor() {
           super();
@@ -28,12 +42,16 @@
         }
 
         async componentDidMount() {
-          const companies = await axios.get('https://acme-users-api-rev.herokuapp.com/api/companies')
+          const companies = (await axios.get('https://acme-users-api-rev.herokuapp.com/api/companies')).data
+          this.setState({companies})
         }
 
         render() {
-          return(
-            <hr/>
+          const {companies} = this.state
+          return (
+            <HashRouter>
+              <Route render = { () => <Nav companies = {companies} /> } />
+            </HashRouter>
           )
         }
       }
