@@ -78,16 +78,12 @@
             this.setState({ company })
           }
         }
+
         render(){
           const { company } = this.state
           return(
             <ul>
-              {
-                company.map(company=> <li key={company.id}>
-                { company.fiscalYear }
-                { company.amount }
-                </li>)
-              }
+              <li>{company.amount}</li>
             </ul>
           );
         }
