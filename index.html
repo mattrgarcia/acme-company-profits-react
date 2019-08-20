@@ -1,8 +1,42 @@
 <html>
   <head>
+      <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+      <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+      <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+      <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.js'></script>
+      <script src='https://cdnjs.cloudflare.com/ajax/libs/react-router-dom/5.0.1/react-router-dom.js'></script>
+      <style>
+        </style>
   </head>
   <body>
-    <script>
+    <div id='root'>
+    </div>
+
+
+    <script type='text/babel'>
+      const root = document.querySelector('#root');
+      const {Component, createElement} = React;
+      const {render} = ReactDOM;
+      const {HashRouter, Route, Link} = ReactRouterDOM;
+
+      class App extends Component {
+        constructor() {
+          super();
+          this.state = {
+            companies = [];
+          }
+        }
+
+        async componentDidMount() {
+          const companies = await axios.get('https://acme-users-api-rev.herokuapp.com/api/companies')
+        }
+
+        render() {
+          return(
+
+          )
+        }
+      }
     </script>
   </body>
 </html>
